@@ -4,4 +4,3 @@ local library = loadstring(game:HttpGet('https://raw.githubusercontent.com/Robot
 print('v2')
 local api = loadstring(game:HttpGet('https://raw.githubusercontent.com/Robote1122/bss_script/refs/heads/main/api.lua'))()
 print('v3')
-print(api.ver)
