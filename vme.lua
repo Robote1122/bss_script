@@ -1,7 +1,7 @@
 local cheat_name = 'nvm'
 
-local library = loadstring(game:HttpGet('https://raw.githubusercontent.com/Robote1122/bss_script/refs/heads/main/library.lua'))()
-local api = loadstring(game:HttpGet('https://raw.githubusercontent.com/Robote1122/bss_script/refs/heads/main/api.lua'))()
+local library = loadstring(game:HttpGet('https://raw.githubusercontent.com/Robote1122/bss_script/refs/heads/main/library.lua',true))()
+local api = loadstring(game:HttpGet('https://raw.githubusercontent.com/Robote1122/bss_script/refs/heads/main/api.lua',true))()
 
 print('start created')
 -- Создаём основное окно
@@ -9,7 +9,7 @@ local Window = library:CreateWindow({
     WindowName = "Kocmoc v3.0.2 Remastered",
     Color = Color3.fromRGB(164, 84, 255)
 }, game:GetService("CoreGui"))
-
+print('pr1')
 -- ============================================
 -- СОЗДАНИЕ ВКЛАДОК
 -- ============================================
