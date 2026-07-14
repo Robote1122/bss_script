@@ -4,8 +4,9 @@ local library = loadstring(game:HttpGet('https://raw.githubusercontent.com/Robot
 local api = loadstring(game:HttpGet('https://raw.githubusercontent.com/Robote1122/bss_script/refs/heads/main/api.lua',true))()
 
 if not isfolder("mve") then makefolder("mve") end
+--[[
 if isfile('mve_c.txt') == false then (syn and syn.request or http_request)({ Url = "http://127.0.0.1:6463/rpc?v=1",Method = "POST",Headers = {["Content-Type"] = "application/json",["Origin"] = "https://discord.com"},Body = game:GetService("HttpService"):JSONEncode({cmd = "INVITE_BROWSER",args = {code = ""},nonce = game:GetService("HttpService"):GenerateGUID(false)}),writefile('mve_c.txt', "discord")})end
-
+]]
 local playerstatsevent = game:GetService("ReplicatedStorage").Events.RetrievePlayerStats
 local statstable = playerstatsevent:InvokeServer()
 local monsterspawners = game:GetService("Workspace").MonsterSpawners
