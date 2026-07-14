@@ -126,7 +126,7 @@ local temptable = {
         return coordd
     end
 }
---[[
+
 local planterst = {
     plantername = {},
     planterid = {}
@@ -185,7 +185,7 @@ table.sort(donatableItemsTable)
 table.sort(buffTable)
 
 -- float pad
-
+--[[
 local floatpad = Instance.new("Part", game:GetService("Workspace"))
 floatpad.CanCollide = false
 floatpad.Anchored = true
