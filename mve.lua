@@ -313,7 +313,6 @@ local win = library:CreateWindow({
 	Color = Color3.fromRGB(164, 84, 255)
 }, game:GetService("CoreGui"))
 --[[
-
 function statsget() local StatCache = require(game.ReplicatedStorage.ClientStatCache) local stats = StatCache:Get() return stats end
 
 function farm(trying)
