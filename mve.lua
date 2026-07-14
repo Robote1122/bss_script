@@ -309,7 +309,7 @@ local defaultconfig = config
 
 
 
---[[
+
 function statsget() local StatCache = require(game.ReplicatedStorage.ClientStatCache) local stats = StatCache:Get() return stats end
 
 function farm(trying)
@@ -441,5 +441,5 @@ AllTokens.ChildRemoved:Connect(function(child)
     if not spawned_tokens[child] return end
     print(spawned_tokens[child].Name,os.clock()-spawned_tokens[child].spawned)
 end)
-]]
+
 print(acces_key)
