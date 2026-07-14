@@ -4,8 +4,10 @@ local library = loadstring(game:HttpGet('https://raw.githubusercontent.com/Robot
 local api = loadstring(game:HttpGet('https://raw.githubusercontent.com/Robote1122/bss_script/refs/heads/main/api.lua',true))()
 
 if not isfolder("mve") then makefolder("mve") end
-
+print('c1')
 local autoLoginSuccess = api.autoLogin()
+
+print('c2')
 
 if not autoLoginSuccess then
     local key = nil
