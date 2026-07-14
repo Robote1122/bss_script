@@ -308,10 +308,7 @@ local config = {
 local defaultconfig = config
 
 
-local win = library:CreateWindow({
-	WindowName = "MVE 0.1",
-	Color = Color3.fromRGB(164, 84, 255)
-}, game:GetService("CoreGui"))
+
 --[[
 function statsget() local StatCache = require(game.ReplicatedStorage.ClientStatCache) local stats = StatCache:Get() return stats end
 
