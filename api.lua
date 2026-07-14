@@ -430,19 +430,23 @@ local xlp = {
 
 	-- Проверка + активация (если нужно)
 	['validateAndActivate'] = function(key, userId)
+        print('r1')
 		local userId = userId or game.Players.LocalPlayer.UserId
 
 		local checkResult = xlp.checkKey(key, userId)
+        print('r2')
 
 		if not checkResult then
 			xlp.notify("Error", "Failed to connect to API", 5)
 			return false
 		end
+        print('r3')
 
 		if not checkResult.is_valid then
 			xlp.notify("Invalid Key", "This key is not valid or expired", 5)
 			return false
 		end
+        print('r4')
 
 		if checkResult.is_bound then
 			xlp.notify("Key Active", "Welcome back!", 3)

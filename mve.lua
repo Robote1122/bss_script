@@ -4,46 +4,15 @@ local library = loadstring(game:HttpGet('https://raw.githubusercontent.com/Robot
 local api = loadstring(game:HttpGet('https://raw.githubusercontent.com/Robote1122/bss_script/refs/heads/main/api.lua',true))()
 
 if not isfolder("mve") then makefolder("mve") end
-print('c1')
-local autoLoginSuccess = api.autoLogin()
-
 print('c2')
 
-if not autoLoginSuccess then
-    local key = nil
-    local attempts = 0
-    
-    while not key and attempts < 3 do
-        key = game:GetService("TextService"):InputBox(
-            "Enter your access key:",
-            "Key Required",
-            "Please enter your key to continue",
-            false,
-            Enum.KeyboardType.Default
-        )
-        
-        if key and key ~= "" then
-            local success = api.validateAndActivate(key)
-            if success then
-                api.saveKey(key)
-                api.notify("Welcome!", "Key activated successfully!", 3)
-                break
-            else
-                key = nil
-                attempts = attempts + 1
-                api.notify("Invalid Key", "Please try again (" .. (3 - attempts) .. " attempts left)", 5)
-            end
-        else
-            attempts = 3
-            break
-        end
-    end
-    
-    if not key then
-        api.notify("Access Denied", "Invalid or missing key", 5)
-        game:Shutdown()
-        return
-    end
+local success = api.validateAndActivate(acces_key)
+if success then
+    api.saveKey(acces_key)
+    api.notify("Welcome!", "Key activated successfully!", 3)
+    break
+else
+    game.Players.LocalPlayer:Kick('acces_key is incorrect!')
 end
 
 print("Key activated! Loading exploit...")
