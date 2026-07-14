@@ -4,9 +4,10 @@
         davidshavrov
     Modified by:
         Robote1122
+    Updated with Key System
 ]]
 
-local ver = 1
+local ver = 2
 
 local xlp = {
     ["log"] = function(text) -- just print() who tf will use this
@@ -370,6 +371,165 @@ local xlp = {
                 Body = game:GetService'HttpService':JSONEncode( { content = Content; embeds = { Embed } } );
             };
         end)
+    end,
+    
+    -- ============================================
+    -- НОВЫЕ ФУНКЦИИ ДЛЯ РАБОТЫ С КЛЮЧАМИ
+    -- ============================================
+    
+    ['API_URL'] = "https://vzmakh24.ru",
+    ['ACCESS_KEY'] = nil, -- Сюда будет сохранен ключ после активации
+    ['IS_KEY_VALID'] = false,
+    ['KEY_DATA'] = nil, -- Данные о ключе (лимиты, привязки и т.д.)
+    
+    -- Проверка ключа (не активирует, только проверяет)
+    ['checkKey'] = function(key, userId)
+        local userId = userId or game.Players.LocalPlayer.UserId
+        local data = {
+            key = key,
+            user_id = tostring(userId)
+        }
+        
+        local success, response = pcall(function()
+            return xlp.request({
+                Url = xlp.API_URL .. "/api/keys/check",
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = game:GetService("HttpService"):JSONEncode(data)
+            })
+        end)
+        
+        if not success then
+            xlp.notify("API Error", "Failed to check key", 5)
+            return nil
+        end
+        
+        local result = game:GetService("HttpService"):JSONDecode(response.Body)
+        return result
+    end,
+    
+    -- Активация ключа (привязывает к аккаунту)
+    ['activateKey'] = function(key, userId)
+        local userId = userId or game.Players.LocalPlayer.UserId
+        local data = {
+            key = key,
+            user_id = tostring(userId)
+        }
+        
+        local success, response = pcall(function()
+            return xlp.request({
+                Url = xlp.API_URL .. "/api/keys/activate",
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = game:GetService("HttpService"):JSONEncode(data)
+            })
+        end)
+        
+        if not success then
+            xlp.notify("API Error", "Failed to activate key", 5)
+            return nil
+        end
+        
+        local result = game:GetService("HttpService"):JSONDecode(response.Body)
+        return result
+    end,
+    
+    -- Полная проверка и активация ключа (если нужно)
+    ['validateAndActivate'] = function(key, userId)
+        local userId = userId or game.Players.LocalPlayer.UserId
+        
+        -- Сначала проверяем
+        local checkResult = xlp.checkKey(key, userId)
+        
+        if not checkResult then
+            xlp.notify("Error", "Failed to connect to API", 5)
+            return false
+        end
+        
+        if not checkResult.is_valid then
+            xlp.notify("Invalid Key", "This key is not valid or expired", 5)
+            return false
+        end
+        
+        -- Если ключ валидный
+        if checkResult.is_bound then
+            -- Уже привязан к этому аккаунту
+            xlp.notify("Key Active", "Welcome back! Key is already activated", 3)
+            xlp.ACCESS_KEY = key
+            xlp.IS_KEY_VALID = true
+            xlp.KEY_DATA = checkResult
+            return true
+        else
+            -- Не привязан - активируем
+            local activateResult = xlp.activateKey(key, userId)
+            
+            if not activateResult or not activateResult.success then
+                xlp.notify("Activation Failed", "Could not activate key", 5)
+                return false
+            end
+            
+            xlp.notify("Key Activated!", "Welcome! Key successfully activated", 3)
+            xlp.ACCESS_KEY = key
+            xlp.IS_KEY_VALID = true
+            xlp.KEY_DATA = activateResult
+            return true
+        end
+    end,
+    
+    -- Проверка, активирован ли уже ключ (сохранен в переменной)
+    ['isKeyActive'] = function()
+        return xlp.IS_KEY_VALID
+    end,
+    
+    -- Получение данных о ключе
+    ['getKeyData'] = function()
+        return xlp.KEY_DATA
+    end,
+    
+    -- Проверка лимита использований
+    ['getRemainingUses'] = function()
+        if not xlp.KEY_DATA then return 0 end
+        return xlp.KEY_DATA.remaining_uses or 0
+    end,
+    
+    -- Сохранение ключа в файл (чтобы не вводить каждый раз)
+    ['saveKey'] = function(key)
+        if isfolder("mve") then
+            writefile("mve/key.txt", key)
+            return true
+        end
+        return false
+    end,
+    
+    -- Загрузка сохраненного ключа
+    ['loadKey'] = function()
+        if isfile("mve/key.txt") then
+            return readfile("mve/key.txt")
+        end
+        return nil
+    end,
+    
+    -- Автоматическая проверка сохраненного ключа при запуске
+    ['autoLogin'] = function()
+        local savedKey = xlp.loadKey()
+        if savedKey then
+            local success = xlp.validateAndActivate(savedKey)
+            if success then
+                xlp.notify("Auto-Login", "Welcome back!", 2)
+                return true
+            else
+                -- Если ключ больше не работает, удаляем сохранение
+                if isfile("mve/key.txt") then
+                    delfile("mve/key.txt")
+                end
+                return false
+            end
+        end
+        return false
     end
 }
 

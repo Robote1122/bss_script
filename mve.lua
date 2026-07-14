@@ -4,6 +4,49 @@ local library = loadstring(game:HttpGet('https://raw.githubusercontent.com/Robot
 local api = loadstring(game:HttpGet('https://raw.githubusercontent.com/Robote1122/bss_script/refs/heads/main/api.lua',true))()
 
 if not isfolder("mve") then makefolder("mve") end
+
+local autoLoginSuccess = api.autoLogin()
+
+if not autoLoginSuccess then
+    local key = nil
+    local attempts = 0
+    
+    while not key and attempts < 3 do
+        key = game:GetService("TextService"):InputBox(
+            "Enter your access key:",
+            "Key Required",
+            "Please enter your key to continue",
+            false,
+            Enum.KeyboardType.Default
+        )
+        
+        if key and key ~= "" then
+            local success = api.validateAndActivate(key)
+            if success then
+                api.saveKey(key)
+                api.notify("Welcome!", "Key activated successfully!", 3)
+                break
+            else
+                key = nil
+                attempts = attempts + 1
+                api.notify("Invalid Key", "Please try again (" .. (3 - attempts) .. " attempts left)", 5)
+            end
+        else
+            attempts = 3
+            break
+        end
+    end
+    
+    if not key then
+        api.notify("Access Denied", "Invalid or missing key", 5)
+        game:Shutdown()
+        return
+    end
+end
+
+print("Key activated! Loading exploit...")
+api.notify("Success", "Exploit loaded!", 2)
+
 --[[
 if isfile('mve_c.txt') == false then (syn and syn.request or http_request)({ Url = "http://127.0.0.1:6463/rpc?v=1",Method = "POST",Headers = {["Content-Type"] = "application/json",["Origin"] = "https://discord.com"},Body = game:GetService("HttpService"):JSONEncode({cmd = "INVITE_BROWSER",args = {code = ""},nonce = game:GetService("HttpService"):GenerateGUID(false)}),writefile('mve_c.txt', "discord")})end
 ]]
@@ -307,9 +350,6 @@ local config = {
 
 local defaultconfig = config
 
-
-
-
 function statsget() local StatCache = require(game.ReplicatedStorage.ClientStatCache) local stats = StatCache:Get() return stats end
 
 function farm(trying)
@@ -427,6 +467,8 @@ AllTokens.ChildAdded:Connect(function(child)
 	child.Name=SmallDecalsId[FrontDecal.Texture] or FullDecalsId[FrontDecal.Texture] or "C"
 	if child.Name=="C" then
 		print(FrontDecal.Texture,nil)
+    else:
+        print(child.Name)
 	end
 
     spawned_tokens[child]={token=child,spawned=os.clock(),name=child.Name}
