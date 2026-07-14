@@ -185,7 +185,7 @@ table.sort(donatableItemsTable)
 table.sort(buffTable)
 
 -- float pad
---[[
+
 local floatpad = Instance.new("Part", game:GetService("Workspace"))
 floatpad.CanCollide = false
 floatpad.Anchored = true
@@ -444,5 +444,5 @@ AllTokens.ChildRemoved:Connect(function(child)
     if not spawned_tokens[child] return end
     print(spawned_tokens[child].Name,os.clock()-spawned_tokens[child].spawned)
 end)
-]]
+
 print(acces_key)
