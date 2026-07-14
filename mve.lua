@@ -133,7 +133,9 @@ local planterst = {
 
 
 
-local win = libary:CreateWindow({
+
+
+local win = library:CreateWindow({
 	WindowName = "MVE 0.1",
 	Color = Color3.fromRGB(164, 84, 255)
 }, game:GetService("CoreGui"))
