@@ -320,39 +320,39 @@ function farm(trying)
 end
 
 function disableall()
-    if kocmoc.toggles.autofarm and not temptable.converting then
+    if config.toggles.autofarm and not temptable.converting then
         temptable.cache.autofarm = true
-        kocmoc.toggles.autofarm = false
+        config.toggles.autofarm = false
     end
-    if kocmoc.toggles.killmondo and not temptable.started.mondo then
-        kocmoc.toggles.killmondo = false
+    if config.toggles.killmondo and not temptable.started.mondo then
+        config.toggles.killmondo = false
         temptable.cache.killmondo = true
     end
-    if kocmoc.toggles.killvicious and not temptable.started.vicious then
-        kocmoc.toggles.killvicious = false
+    if config.toggles.killvicious and not temptable.started.vicious then
+        config.toggles.killvicious = false
         temptable.cache.vicious = true
     end
-    if kocmoc.toggles.killwindy and not temptable.started.windy then
-        kocmoc.toggles.killwindy = false
+    if config.toggles.killwindy and not temptable.started.windy then
+        config.toggles.killwindy = false
         temptable.cache.windy = true
     end
 end
 
 function enableall()
     if temptable.cache.autofarm then
-        kocmoc.toggles.autofarm = true
+        config.toggles.autofarm = true
         temptable.cache.autofarm = false
     end
     if temptable.cache.killmondo then
-        kocmoc.toggles.killmondo = true
+        config.toggles.killmondo = true
         temptable.cache.killmondo = false
     end
     if temptable.cache.vicious then
-        kocmoc.toggles.killvicious = true
+        config.toggles.killvicious = true
         temptable.cache.vicious = false
     end
     if temptable.cache.windy then
-        kocmoc.toggles.killwindy = true
+        config.toggles.killwindy = true
         temptable.cache.windy = false
     end
 end
@@ -439,8 +439,8 @@ AllTokens.ChildRemoved:Connect(function(child)
 	if child.Name!="C" then
 		print(FrontDecal.Texture,nil)
 	end
-    if not(spawned_tokens[child]) return end
-    print(,spawned_tokens[child].Name,os.clock()-spawned_tokens[child].spawned)
+    if not spawned_tokens[child] return end
+    print(spawned_tokens[child].Name,os.clock()-spawned_tokens[child].spawned)
 end)
 
 print(acces_key)
