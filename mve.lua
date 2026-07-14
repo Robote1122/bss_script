@@ -467,7 +467,7 @@ AllTokens.ChildAdded:Connect(function(child)
 	child.Name=SmallDecalsId[FrontDecal.Texture] or FullDecalsId[FrontDecal.Texture] or "C"
 	if child.Name=="C" then
 		print(FrontDecal.Texture,nil)
-    else:
+    else
         print(child.Name)
 	end
 
@@ -480,7 +480,7 @@ AllTokens.ChildRemoved:Connect(function(child)
 	if child.Name!="C" then
 		print(FrontDecal.Texture,nil)
 	end
-    if not spawned_tokens[child] return end
+    if not spawned_tokens[child] then return end
     print(spawned_tokens[child].Name,os.clock()-spawned_tokens[child].spawned)
 end)
 
