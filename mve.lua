@@ -477,7 +477,7 @@ end)
 AllTokens.ChildRemoved:Connect(function(child)
 	local FrontDecal = child:WaitForChild("FrontDecal")
 	child.Name=SmallDecalsId[FrontDecal.Texture] or FullDecalsId[FrontDecal.Texture] or "C"
-	if child.Name!="C" then
+	if child.Name~="C" then
 		print(FrontDecal.Texture,nil)
 	end
     if not spawned_tokens[child] then return end
