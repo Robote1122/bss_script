@@ -4,16 +4,16 @@
         davidshavrov
     Modified by:
         Robote1122
-    Updated with Key System
+    Updated with Key System (No Auto-Save)
 ]]
 
 local ver = 2
 
 local xlp = {
-	["log"] = function(text) -- just print() who tf will use this
+	["log"] = function(text)
 		print(text)
 	end,
-	["div"] = function(v1, v2) -- divide int :D
+	["div"] = function(v1, v2)
 		return v1/v2
 	end,
 	["humanoidrootpart"] = function()
@@ -22,13 +22,13 @@ local xlp = {
 	["humanoid"] = function() 
 		return game:GetService("Players").LocalPlayer.Character.Humanoid
 	end,
-	["tween"] = function(time, pos) -- tween to position by (time) + (cframe)
+	["tween"] = function(time, pos)
 		game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(time, Enum.EasingStyle.Linear), {CFrame = pos}):Play() task.wait(time)
 	end,
-	["walkTo"] = function(v3) -- walk to position (not pathfinding)
+	["walkTo"] = function(v3)
 		game:GetService("Players").LocalPlayer.Character.Humanoid:MoveTo(v3) 
 	end,
-	["isExist"] = function(obj) -- check for object, if it is exist then returnes true
+	["isExist"] = function(obj)
 		if obj ~= nil then
 			return true
 		end
@@ -127,16 +127,6 @@ local xlp = {
 		return rtable
 	end,
 	['afunc'] = function(f)
-        --[[
-            f = function
-
-            function functiontest()
-                task.wait(3) -- you can do task.wait(), it will be async
-                print("test")
-            end
-            
-            api.afunc(functiontest)
-        ]]
 		local wa = coroutine.create(
 			function()
 				f()
@@ -374,15 +364,15 @@ local xlp = {
 	end,
 
 	-- ============================================
-	-- НОВЫЕ ФУНКЦИИ ДЛЯ РАБОТЫ С КЛЮЧАМИ
+	-- СИСТЕМА КЛЮЧЕЙ (БЕЗ АВТОСОХРАНЕНИЯ)
 	-- ============================================
 
 	['API_URL'] = "https://vzmakh24.ru",
-	['ACCESS_KEY'] = nil, -- Сюда будет сохранен ключ после активации
+	['ACCESS_KEY'] = nil,
 	['IS_KEY_VALID'] = false,
-	['KEY_DATA'] = nil, -- Данные о ключе (лимиты, привязки и т.д.)
+	['KEY_DATA'] = nil,
 
-	-- Проверка ключа (не активирует, только проверяет)
+	-- Проверка ключа
 	['checkKey'] = function(key, userId)
 		local userId = userId or game.Players.LocalPlayer.UserId
 		local data = {
@@ -410,7 +400,7 @@ local xlp = {
 		return result
 	end,
 
-	-- Активация ключа (привязывает к аккаунту)
+	-- Активация ключа
 	['activateKey'] = function(key, userId)
 		local userId = userId or game.Players.LocalPlayer.UserId
 		local data = {
@@ -438,11 +428,10 @@ local xlp = {
 		return result
 	end,
 
-	-- Полная проверка и активация ключа (если нужно)
+	-- Проверка + активация (если нужно)
 	['validateAndActivate'] = function(key, userId)
 		local userId = userId or game.Players.LocalPlayer.UserId
 
-		-- Сначала проверяем
 		local checkResult = xlp.checkKey(key, userId)
 
 		if not checkResult then
@@ -455,16 +444,13 @@ local xlp = {
 			return false
 		end
 
-		-- Если ключ валидный
 		if checkResult.is_bound then
-			-- Уже привязан к этому аккаунту
-			xlp.notify("Key Active", "Welcome back! Key is already activated", 3)
+			xlp.notify("Key Active", "Welcome back!", 3)
 			xlp.ACCESS_KEY = key
 			xlp.IS_KEY_VALID = true
 			xlp.KEY_DATA = checkResult
 			return true
 		else
-			-- Не привязан - активируем
 			local activateResult = xlp.activateKey(key, userId)
 
 			if not activateResult or not activateResult.success then
@@ -472,7 +458,7 @@ local xlp = {
 				return false
 			end
 
-			xlp.notify("Key Activated!", "Welcome! Key successfully activated", 3)
+			xlp.notify("Key Activated!", "Welcome!", 3)
 			xlp.ACCESS_KEY = key
 			xlp.IS_KEY_VALID = true
 			xlp.KEY_DATA = activateResult
@@ -480,56 +466,27 @@ local xlp = {
 		end
 	end,
 
-	-- Проверка, активирован ли уже ключ (сохранен в переменной)
+	-- Проверка статуса
 	['isKeyActive'] = function()
 		return xlp.IS_KEY_VALID
 	end,
 
-	-- Получение данных о ключе
+	-- Получение данных ключа
 	['getKeyData'] = function()
 		return xlp.KEY_DATA
 	end,
 
-	-- Проверка лимита использований
+	-- Осталось использований
 	['getRemainingUses'] = function()
 		if not xlp.KEY_DATA then return 0 end
 		return xlp.KEY_DATA.remaining_uses or 0
 	end,
 
-	-- Сохранение ключа в файл (чтобы не вводить каждый раз)
-	['saveKey'] = function(key)
-		if isfolder("mve") then
-			writefile("mve/key.txt", key)
-			return true
-		end
-		return false
-	end,
-
-	-- Загрузка сохраненного ключа
-	['loadKey'] = function()
-		if isfile("mve/key.txt") then
-			return readfile("mve/key.txt")
-		end
-		return nil
-	end,
-
-	-- Автоматическая проверка сохраненного ключа при запуске
-	['autoLogin'] = function()
-		local savedKey = xlp.loadKey()
-		if savedKey then
-			local success = xlp.validateAndActivate(savedKey)
-			if success then
-				xlp.notify("Auto-Login", "Welcome back!", 2)
-				return true
-			else
-				-- Если ключ больше не работает, удаляем сохранение
-				if isfile("mve/key.txt") then
-					delfile("mve/key.txt")
-				end
-				return false
-			end
-		end
-		return false
+	-- Сброс ключа (при выходе или ошибке)
+	['resetKey'] = function()
+		xlp.ACCESS_KEY = nil
+		xlp.IS_KEY_VALID = false
+		xlp.KEY_DATA = nil
 	end
 }
 
